@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCO_VOICE_BOT</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+      margin: 0;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    p {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: white;
+      color: #2575fc;
+      font-weight: bold;
+      transition: background 0.3s, color 0.3s;
+    }
+    button:hover {
+      background: #2575fc;
+      color: white;
+    }
+    #log {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 700px;
+      margin-inline: auto;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      color: #f1f1f1;
+      font-size: 1rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    b {
+      color: #ffd700;
+    }
+    i {
+      color: #dcdcdc;
+    }
+  </style>
+</head>
+<body>
+  <h1>MCO_VOICE_BOT</h1>
+  <p>Click below, ask your question by voice, and the assistant will reply.</p>
+  <button onclick="startListening()">Start Listening</button>
+  <div id="log"></div>
+
+  <script>
+    const API_KEY = "4HrINuWhJX7c1CgNkFs9Lwtt"; // 🔑 Replace with your OpenAI key
+    const logBox = document.getElementById("log");
+
+    function log(text) {
+      logBox.innerHTML += `<p>${text}</p>`;
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    // 🎙️ Speech recognition
+    function startListening() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = async (event) => {
+        const transcript = event.results[0][0].transcript;
+        log("<b>You:</b> " + transcript);
+        handleQuery(transcript);
+      };
+    }
+
+    // Main query handler
+    async function handleQuery(query) {
+      log("<i>Searching Wikipedia...</i>");
+      const wikiSummary = await fetchWikipedia(query);
+
+      if (wikiSummary) {
+        log("<b>Wikipedia:</b> " + wikiSummary);
+        speak(wikiSummary);
+      } else {
+        log("<i>Wikipedia not found, asking AI...</i>");
+        getAIResponse(query);
+      }
+    }
+
+    // 📖 Wikipedia API
+    async function fetchWikipedia(query) {
+      try {
+        const response = await fetch(
+          `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`
+        );
+        if (!response.ok) return null;
+
+        const data = await response.json();
+        if (data.extract) {
+          return data.extract;
+        } else {
+          return null;
+        }
+      } catch (error) {
+        return null;
+      }
+    }
+
+    // 🤖 AI API
+    async function getAIResponse(prompt) {
+      log("<i>Thinking...</i>");
+
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      const aiText = data.choices[0].message.content;
+      log("<b>MCO_VOICE_BOT:</b> " + aiText);
+      speak(aiText);
+    }
+
+    // 🔊 Speak out response
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      speechSynthesis.speak(utterance);
+    }
+
+    // 👋 Intro on load
+    window.onload = () => {
+      const intro = "MCO_VOICE_BOT, created by Siddiqul Akbar.";
+      log("<b>MCO_VOICE_BOT:</b> " + intro);
+      speak(intro);
+    };
+  </script>
+</body>
+</html>      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = async (event) => {
+        const transcript = event.results[0][0].transcript;
+        lo4HrINuWhJX7c1CgNkFs9Lwttg("<b>You:</b> " + transcript);
+        handleQuery(transcript);
+      };
+    }
+
+    // Main query handler
+    async function handleQuery(query) {
+      log("<i>Searching Wikipedia...</i>");
+      const wikiSummary = await fetchWikipedia(query);
+
+      if (wikiSummary) {
+        log("<b>Wikipedia:</b> " + wikiSummary);
+        speak(wikiSummary);
+      } else {
+        log("<i>Wikipedia not found, asking AI...</i>");
+        getAIResponse(query);
+      }
+    }
+
+    // 📖 Wikipedia API
+    async function fetchWikipedia(query) {
+      try {
+        const response = await fetch(
+          `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`
+        );
+        if (!response.ok) return null;
+
+        const data = await response.json();
+        if (data.extract) {
+          return data.extract;
+        } else {
+          return null;
+        }
+      } catch (error) {
+        return null;
+      }
+    }
+
+    // 🤖 AI API
+    async function getAIResponse(prompt) {
+      log("<i>Thinking...</i>");
+
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      const aiText = data.choices[0].message.content;
+      log("<b>MCO_VOICE_BOT:</b> " + aiText);
+      speak(aiText);
+    }
+
+    // 🔊 Speak out response
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      speechSynthesis.speak(utterance);
+    }
+
+    // 👋 Intro on load
+    window.onload = () => {
+      const intro = "MCO_VOICE_BOT, created by Siddiqul Akbar.";
+      log("<b>MCO_VOICE_BOT:</b> " + intro);
+      speak(intro);
+    };
+  </script>
+</body>
+</html>
